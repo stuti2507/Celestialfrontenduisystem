@@ -1,7 +1,7 @@
 import { Link, useLocation } from 'react-router';
 import { Search, BookOpen, BarChart3, MessageSquare, FileText, Library, Menu, BookMarked } from 'lucide-react';
 import { useState } from 'react';
-import logoImage from 'figma:asset/1b1ce5c7070d39fb4bacc54354bc4495ea8f967a.png';
+import logoImage from '../../assets/1b1ce5c7070d39fb4bacc54354bc4495ea8f967a.png';
 
 export function Navigation() {
   const location = useLocation();
