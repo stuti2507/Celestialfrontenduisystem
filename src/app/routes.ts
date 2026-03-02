@@ -10,6 +10,8 @@ import { TopicHub } from './pages/TopicHub';
 import { Glossary } from './pages/Glossary';
 import { About, Methodology } from './pages/StaticPages';
 import { NotFound } from './pages/NotFound';
+import { ExpertProfile } from './pages/ExpertProfile';
+import { ContributionDashboard } from './pages/ContributionDashboard';
 
 export const router = createBrowserRouter([
   {
@@ -26,6 +28,8 @@ export const router = createBrowserRouter([
       { path: 'glossary', Component: Glossary },
       { path: 'about', Component: About },
       { path: 'methodology', Component: Methodology },
+      { path: 'experts/:expertId', Component: ExpertProfile },
+      { path: 'editor/contributions', Component: ContributionDashboard },
       { path: '*', Component: NotFound },
     ],
   },

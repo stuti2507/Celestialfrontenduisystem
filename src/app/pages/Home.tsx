@@ -4,7 +4,8 @@ import { ArrowRight, Sparkles, Shield, TrendingUp } from 'lucide-react';
 import { GlassCard } from '../components/GlassCard';
 import { SnowflakePattern } from '../components/StarfieldBackground';
 import { EcosystemCircle } from '../components/EcosystemCircle';
-import celestialBg from 'figma:asset/d4106212b6c715e84315866f019843919d15f109.png';
+import { WhyNowCharts } from '../components/why-now/WhyNowCharts';
+import celestialBg from '../../assets/d4106212b6c715e84315866f019843919d15f109.png';
 
 export function Home() {
   return (
@@ -290,51 +291,12 @@ export function Home() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6, delay: 0.2 }}
+            className="space-y-8"
           >
-            <GlassCard className="p-12">
-              <ul className="space-y-6">
-                <li className="flex items-start space-x-4">
-                  <span className="text-[#5AB9CC] text-2xl">•</span>
-                  <span className="text-muted-foreground leading-relaxed">
-                    Ageing is a defining demographic challenge for advanced economies
-                  </span>
-                </li>
-                <li className="flex items-start space-x-4">
-                  <span className="text-[#5AB9CC] text-2xl">•</span>
-                  <span className="text-muted-foreground leading-relaxed">
-                    Prevention could save billions annually
-                  </span>
-                </li>
-                <li className="flex items-start space-x-4">
-                  <span className="text-[#5AB9CC] text-2xl">•</span>
-                  <span className="text-muted-foreground leading-relaxed">
-                    Regenerative medicine is accelerating, often without regulation
-                  </span>
-                </li>
-                <li className="flex items-start space-x-4">
-                  <span className="text-[#5AB9CC] text-2xl">•</span>
-                  <span className="text-muted-foreground leading-relaxed">
-                    Trust in online health information is at historic lows
-                  </span>
-                </li>
-                <li className="flex items-start space-x-4">
-                  <span className="text-[#5AB9CC] text-2xl">•</span>
-                  <span className="text-muted-foreground leading-relaxed">
-                    No unified system connects science → economics → policy → public clarity
-                  </span>
-                </li>
-              </ul>
-
-              <div className="mt-12 pt-8 border-t border-white/40 space-y-4 text-center">
-                <p className="text-lg text-foreground">
-                  Longevity is the biggest market transformation of our time.
-                  <br />
-                  It has no operating system.
-                </p>
-                <p className="text-xl text-[#5AB9CC] font-medium">
-                  ESTRA is that system.
-                </p>
-              </div>
+            <WhyNowCharts />
+            <GlassCard className="p-8 text-center">
+              <p className="text-lg text-foreground">Longevity is the biggest market transformation of our time. It has no operating system.</p>
+              <p className="text-xl text-[#5AB9CC] font-medium mt-3">ESTRA is that system.</p>
             </GlassCard>
           </motion.div>
         </div>

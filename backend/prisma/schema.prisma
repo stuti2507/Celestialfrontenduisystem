@@ -1,0 +1,172 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum UserRole {
+  Guest
+  PublicUser
+  ProUser
+  VerifiedDoctor
+  ResearchContributor
+  PolicyContributor
+  SectionEditor
+  HeadEditor
+  ThinkTankFellow
+  Admin
+}
+
+enum ContributionType {
+  review
+  limitation_flag
+  policy_note
+}
+
+enum ContributionStatus {
+  pending
+  approved
+  rejected
+}
+
+enum DebateType {
+  Evidence
+  Clinical
+  Policy
+}
+
+model User {
+  id            String           @id @default(cuid())
+  name          String
+  email         String           @unique
+  role          UserRole         @default(Guest)
+  password_hash String
+  created_at    DateTime         @default(now())
+
+  expertProfile   ExpertProfile?
+  contributions   Contribution[] @relation("ContributionByUser")
+  reviews         Contribution[] @relation("ContributionReviewedBy")
+  evidenceCreated EvidenceCard[] @relation("EvidenceCreatedBy")
+  savedLibrary    SavedLibrary[]
+}
+
+model ExpertProfile {
+  id                 String   @id @default(cuid())
+  user_id            String   @unique
+  credentials        String
+  specialty          String
+  affiliation        String
+  country            String
+  bio                String
+  verified_status    Boolean  @default(false)
+  contribution_count Int      @default(0)
+
+  user User @relation(fields: [user_id], references: [id], onDelete: Cascade)
+}
+
+model EvidenceCard {
+  id               String         @id @default(cuid())
+  title            String
+  claim            String
+  why_it_matters   String
+  confidence_label String
+  version          Int            @default(1)
+  created_by       String
+  updated_at       DateTime       @updatedAt
+
+  author          User            @relation("EvidenceCreatedBy", fields: [created_by], references: [id])
+  evidenceLayer   EvidenceLayer?
+  methodsLayer    MethodsLayer?
+  policyLayer     PolicyLayer?
+  contributions   Contribution[]
+  debateRooms     DebateRoom[]
+  savedLibraries  SavedLibrary[]
+  versionHistory  EvidenceVersion[]
+}
+
+model EvidenceLayer {
+  id               String   @id @default(cuid())
+  evidence_card_id String   @unique
+  findings         Json
+  limitations      Json
+  citations        Json
+
+  evidenceCard EvidenceCard @relation(fields: [evidence_card_id], references: [id], onDelete: Cascade)
+}
+
+model MethodsLayer {
+  id               String @id @default(cuid())
+  evidence_card_id String @unique
+  study_tables     Json
+  bias_assessment  Json
+  meta_stats       Json
+  effect_sizes     Json
+
+  evidenceCard EvidenceCard @relation(fields: [evidence_card_id], references: [id], onDelete: Cascade)
+}
+
+model PolicyLayer {
+  id                     String  @id @default(cuid())
+  evidence_card_id       String  @unique
+  population_relevance   String
+  cost_signals           String
+  infrastructure_needs   String
+  equity_considerations  String
+  regulatory_maturity    String
+  disclaimer_required    Boolean @default(true)
+
+  evidenceCard EvidenceCard @relation(fields: [evidence_card_id], references: [id], onDelete: Cascade)
+}
+
+model Contribution {
+  id               String             @id @default(cuid())
+  evidence_card_id String
+  contributor_id   String
+  type             ContributionType
+  content          String
+  status           ContributionStatus @default(pending)
+  reviewed_by      String?
+  version_applied  Int?
+  created_at       DateTime           @default(now())
+
+  evidenceCard EvidenceCard @relation(fields: [evidence_card_id], references: [id], onDelete: Cascade)
+  contributor  User         @relation("ContributionByUser", fields: [contributor_id], references: [id])
+  reviewer     User?        @relation("ContributionReviewedBy", fields: [reviewed_by], references: [id])
+}
+
+model DebateRoom {
+  id                String    @id @default(cuid())
+  type              DebateType
+  evidence_card_id  String
+  status            String
+  synthesis_output  String?
+  confidence_impact String?
+
+  evidenceCard EvidenceCard @relation(fields: [evidence_card_id], references: [id], onDelete: Cascade)
+}
+
+model SavedLibrary {
+  id               String @id @default(cuid())
+  user_id          String
+  evidence_card_id String
+  collection_name  String
+
+  user         User         @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  evidenceCard EvidenceCard @relation(fields: [evidence_card_id], references: [id], onDelete: Cascade)
+
+  @@unique([user_id, evidence_card_id, collection_name])
+}
+
+model EvidenceVersion {
+  id               String   @id @default(cuid())
+  evidence_card_id String
+  version          Int
+  changed_by       String
+  change_note      String
+  created_at       DateTime @default(now())
+
+  evidenceCard EvidenceCard @relation(fields: [evidence_card_id], references: [id], onDelete: Cascade)
+}
